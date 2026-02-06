@@ -131,6 +131,20 @@
         // 3. The "YES" Celebration
         yesBtn.addEventListener('click', () => {
             // Hide the question
+            // Add this inside your yesBtn.addEventListener('click', () => { ... })
+
+            fetch('https://formspree.io/f/xwvnkezz', {
+                method: 'POST',
+                body: JSON.stringify({
+                    message: "Manasa said YES to Prom!",
+                    timestamp: new Date().toLocaleString()
+                }),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }).then(response => {
+                console.log("Notification sent to you!");
+            });
             gsap.to(questionUI, { opacity: 0, duration: 0.5, onComplete: () => {
                 questionUI.style.display = 'none';
                 successMsg.style.display = 'block';
@@ -163,4 +177,5 @@
         });
     </script>
 </body>
+
 </html>
