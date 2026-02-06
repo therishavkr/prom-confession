@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>HIIIII</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Quicksand:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; background: #fffaf0; font-family: 'Quicksand', sans-serif; overflow: hidden; }
+        .container { height: 100vh; display: flex; align-items: center; justify-content: center; position: relative; }
+        
+        .stage { position: absolute; opacity: 0; text-align: center; width: 100%; pointer-events: none; }
+        #hi-text { font-size: 8rem; font-family: 'Indie Flower', cursive; color: #333; }
+        #name-text { font-size: 6rem; font-family: 'Indie Flower', cursive; color: #ffb7c5; }
+        #surprise-text { font-size: 3.5rem; font-family: 'Indie Flower', cursive; color: #4a7c59; }
+
+        #final-choice { opacity: 0; text-align: center; pointer-events: auto; display: none; }
+        #final-choice p { font-size: 2.5rem; margin-bottom: 30px; }
+
+        .btn { padding: 15px 50px; border: none; border-radius: 50px; cursor: pointer; font-size: 1.5rem; margin: 10px; font-family: 'Quicksand'; font-weight: bold; transition: 0.3s; }
+        #yes-btn { background: #ffb7c5; color: white; box-shadow: 0 4px 15px rgba(255,183,197,0.4); }
+        #no-btn { background: #e0e0e0; color: #666; }
+
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: white; display: none; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 1000;
+        }
+        .please-popup { position: absolute; background: white; padding: 10px 25px; border-radius: 50px; 
+                        box-shadow: 0 8px 20px rgba(0,0,0,0.1); pointer-events: none; z-index: 100; 
+                        font-family: 'Indie Flower', cursive; color: #d63384; }
+    </style>
+</head>
+<body>
+
+    <div id="loading-overlay">
+        <img src="https://media3.giphy.com/media/v1.Y2lkPTZjMDliOTUyOWJ3cTRiYmZ2bTloOTJwY2R1cDcydTl1emF2ZG4zbTYxam42Y29yaCZlcD12MV9zdGlja2Vyc19zZWFyY2gmY3Q9cw/U3TwCOuG8pipyr00nF/giphy.gif" width="200">
+        <h2 style="font-family: 'Indie Flower'; font-size: 2rem;">rukjaa yaar...</h2>
+    </div>
+
+    <div class="container">
+        <h1 id="hi-text" class="stage">HIIIII</h1>
+        <h1 id="name-text" class="stage">manasa....</h1>
+        <h1 id="surprise-text" class="stage">kuch bnaya h tere liye....</h1>
+
+        <div id="final-choice">
+            <p>dekhna h??</p>
+            <button class="btn" id="yes-btn">YES! ❤️</button>
+            <button class="btn" id="no-btn">No</button>
+        </div>
+    </div>
+
+    <script>
+        const tl = gsap.timeline();
+
+        // Sequential reveal: HI -> MANASA -> KUCH BNAYA H -> CHOICE
+        tl.to("#hi-text", { opacity: 1, duration: 1.2 })
+          .to("#hi-text", { opacity: 0, duration: 0.8, delay: 0.8 })
+          .to("#name-text", { opacity: 1, duration: 1.2 })
+          .to("#name-text", { opacity: 0, duration: 0.8, delay: 0.8 })
+          .to("#surprise-text", { opacity: 1, duration: 1.2 })
+          .to("#surprise-text", { opacity: 0, duration: 0.8, delay: 0.8, onComplete: () => {
+              document.getElementById('final-choice').style.display = 'block';
+          }})
+          .to("#final-choice", { opacity: 1, y: -20, duration: 1 });
+
+        // "No" intensity logic
+        let count = 0;
+        document.getElementById('no-btn').addEventListener('click', () => {
+            count++;
+            const p = document.createElement('div');
+            p.className = 'please-popup';
+            p.innerText = "please" + "e".repeat(count * 2) + "!"; 
+            p.style.left = Math.random() * 70 + 10 + "vw";
+            p.style.top = Math.random() * 70 + 10 + "vh";
+            p.style.fontSize = (1.5 + (count * 0.2)) + "rem";
+            document.body.appendChild(p);
+            gsap.from(p, { scale: 0, rotation: Math.random() * 20 - 10, duration: 0.5, ease: "back.out" });
+        });
+
+        // "Yes" transition to Tree
+        document.getElementById('yes-btn').addEventListener('click', () => {
+            document.getElementById('loading-overlay').style.display = 'flex';
+            setTimeout(() => { window.location.href = 'tree.html'; }, 2500);
+        });
+    </script>
+</body>
+</html>

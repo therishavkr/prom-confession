@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Question</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Varela+Round&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fffaf0;
+            --accent-pink: #ffb7c5;
+        }
+
+        body { 
+            background: var(--bg-color); 
+            margin: 0; 
+            height: 100vh; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-family: 'Varela Round', sans-serif; 
+            overflow: hidden; 
+        }
+
+        .ask-container { text-align: center; z-index: 10; }
+
+        h1 { 
+            font-family: 'Caveat', cursive; 
+            font-size: clamp(3rem, 10vw, 5rem); 
+            color: #444; 
+            margin-bottom: 50px; 
+            opacity: 0; 
+            transform: translateY(20px);
+        }
+
+        .btn-wrap { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 20px; 
+            height: 100px; 
+        }
+
+        .btn { 
+            padding: 20px 60px; 
+            border: none; 
+            border-radius: 50px; 
+            font-size: 1.5rem; 
+            font-weight: bold; 
+            cursor: pointer; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+            font-family: 'Varela Round', sans-serif;
+        }
+
+        #yes-btn { 
+            background: var(--accent-pink); 
+            color: white; 
+            box-shadow: 0 10px 20px rgba(255,183,197,0.4); 
+        }
+
+        #no-btn { 
+            background: #e0e0e0; 
+            color: #666; 
+            position: relative;
+        }
+
+        #yes-btn:hover { transform: scale(1.1); }
+
+        /* Success Message */
+        #success-msg {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 100;
+        }
+        #success-msg h2 { font-family: 'Caveat', cursive; font-size: 4rem; color: #d63384; }
+    </style>
+</head>
+<body>
+
+    <div class="ask-container" id="question-ui">
+        <h1>will you come to prom wid me??</h1>
+        <div class="btn-wrap">
+            <button class="btn" id="yes-btn">YES! ❤️</button>
+            <button class="btn" id="no-btn">no :(</button>
+        </div>
+    </div>
+
+    <div id="success-msg">
+        <h2>I knew it! ❤️</h2>
+        <p style="font-size: 1.5rem; color: #555;">See you at Prom, madammmm.</p>
+    </div>
+
+    <script>
+        // 1. Initial reveal
+        gsap.to("h1", { opacity: 1, y: 0, duration: 1.5, ease: "power2.out" });
+
+        const noBtn = document.getElementById('no-btn');
+        const yesBtn = document.getElementById('yes-btn');
+        const questionUI = document.getElementById('question-ui');
+        const successMsg = document.getElementById('success-msg');
+
+        // 2. The "Running" No Button Logic
+        noBtn.addEventListener('mouseover', () => {
+            // Get random position within the viewport
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 50);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
+            
+            gsap.to(noBtn, {
+                position: 'absolute',
+                left: x,
+                top: y,
+                duration: 0.3,
+                ease: "power1.out"
+            });
+        });
+
+        // Also move it if she tries to click it (for mobile/touch)
+        noBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            const x = Math.random() * (window.innerWidth - noBtn.offsetWidth - 50);
+            const y = Math.random() * (window.innerHeight - noBtn.offsetHeight - 50);
+            gsap.to(noBtn, { left: x, top: y, duration: 0.3 });
+        });
+
+        // 3. The "YES" Celebration
+        yesBtn.addEventListener('click', () => {
+            // Hide the question
+            gsap.to(questionUI, { opacity: 0, duration: 0.5, onComplete: () => {
+                questionUI.style.display = 'none';
+                successMsg.style.display = 'block';
+                gsap.from(successMsg, { scale: 0, opacity: 0, duration: 1, ease: "back.out" });
+            }});
+
+            // Multi-burst Confetti
+            const end = Date.now() + (3 * 1000); // 3 seconds of confetti
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ffb7c5', '#ff69b4', '#ffffff']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ffb7c5', '#ff69b4', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        });
+    </script>
+</body>
+</html>
